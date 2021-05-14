@@ -13,10 +13,7 @@
     }
     NSMutableArray *arrayOfNumbers = [NSMutableArray new];
     NSMutableArray *arrayOfStrings = [NSMutableArray new];
-    NSArray *returnedNumbers;
-    NSArray *returnedStrings;
-    NSArray *returnedTwoDimensional;
-    
+
     for (NSArray *oneArray in array) {
         if ([oneArray[0] isKindOfClass:[NSNumber class]]) {
             [arrayOfNumbers addObjectsFromArray:oneArray];
@@ -27,24 +24,19 @@
         }
     }
     
-    if (arrayOfNumbers.count > 0 ) {
-        NSSortDescriptor *descriptor = [NSSortDescriptor sortDescriptorWithKey:nil ascending:YES];
-        returnedNumbers = [arrayOfNumbers sortedArrayUsingDescriptors:@[descriptor]];
+   
+    NSSortDescriptor *descriptor = [NSSortDescriptor sortDescriptorWithKey:nil ascending:YES];
+    NSSortDescriptor *descriptorForDisascending = [NSSortDescriptor sortDescriptorWithKey:nil ascending:NO];
+    
+    
+    if (arrayOfNumbers.count > 0 && arrayOfStrings.count > 0) {
+        return @[[arrayOfNumbers sortedArrayUsingDescriptors:@[descriptor]], [arrayOfStrings sortedArrayUsingDescriptors:@[descriptorForDisascending]]];
     }
     
-    if (arrayOfStrings.count > 0) {
-        returnedStrings = [arrayOfStrings sortedArrayUsingSelector:@selector(compare:)];
-    }
-    
-    if (returnedStrings != nil && returnedNumbers != nil) {
-        returnedTwoDimensional = @[returnedNumbers, returnedStrings];
-        return returnedTwoDimensional;
-    }
-    
-    if (returnedNumbers.count > 0) {
-        return returnedNumbers;
+    if (arrayOfNumbers.count > 0) {
+        return [arrayOfNumbers sortedArrayUsingDescriptors:@[descriptor]];;
     } else {
-        return returnedStrings;
+        return [arrayOfStrings sortedArrayUsingSelector:@selector(compare:)];;
     }
 }
 
