@@ -3,41 +3,30 @@
 @implementation TwoDimensionalArraySorter
 
 - (NSArray *)twoDimensionalSort:(NSArray<NSArray *> *)array {
-    if (([array isEqualToArray:@[]] || array == nil))  {
+    if ([array isEqualToArray:@[]] || array == nil || ![array[0] isKindOfClass:[NSArray class]])  {
         return @[];
-    }
-    for (NSArray *internalArray in array) {
-        if (![internalArray isKindOfClass:[NSArray class]]) {
-            return @[];
-        }
     }
     NSMutableArray *arrayOfNumbers = [NSMutableArray new];
     NSMutableArray *arrayOfStrings = [NSMutableArray new];
-
     for (NSArray *oneArray in array) {
-        if ([oneArray[0] isKindOfClass:[NSNumber class]]) {
-            [arrayOfNumbers addObjectsFromArray:oneArray];
+        for (id member in oneArray) {
+            if ([member isKindOfClass:[NSNumber class]]) {
+                [arrayOfNumbers addObject:member];
+            } else {
+                [arrayOfStrings addObject:member];
+            }
         }
-        
-        if ([oneArray[0] isKindOfClass:[NSString class]]) {
-            [arrayOfStrings addObjectsFromArray:oneArray];
-        }
     }
-    
-   
-    NSSortDescriptor *descriptor = [NSSortDescriptor sortDescriptorWithKey:nil ascending:YES];
-    NSSortDescriptor *descriptorForDisascending = [NSSortDescriptor sortDescriptorWithKey:nil ascending:NO];
-    
-    
-    if (arrayOfNumbers.count > 0 && arrayOfStrings.count > 0) {
-        return @[[arrayOfNumbers sortedArrayUsingDescriptors:@[descriptor]], [arrayOfStrings sortedArrayUsingDescriptors:@[descriptorForDisascending]]];
+    if (arrayOfStrings.count == 0) {
+        [arrayOfNumbers sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:nil ascending:YES]]];
+        return arrayOfNumbers;
+    } else if (arrayOfNumbers.count == 0){
+        [arrayOfStrings sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        return arrayOfStrings;
     }
-    
-    if (arrayOfNumbers.count > 0) {
-        return [arrayOfNumbers sortedArrayUsingDescriptors:@[descriptor]];;
-    } else {
-        return [arrayOfStrings sortedArrayUsingSelector:@selector(compare:)];;
-    }
+    [arrayOfNumbers sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:nil ascending:YES]]];
+    [arrayOfStrings sortUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:nil ascending:NO selector:@selector(localizedCaseInsensitiveCompare:)]]];
+    return @[arrayOfNumbers, arrayOfStrings];
 }
-
+    
 @end

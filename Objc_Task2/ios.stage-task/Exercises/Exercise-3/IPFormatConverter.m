@@ -3,37 +3,26 @@
 @implementation IPFormatConverter
 
 - (NSString *)ipFormatConverter:(NSArray *)numbersArray {
-    if (numbersArray == nil || [numbersArray isEqualToArray:@[]]) { return @"";}
-    for (NSNumber *number in numbersArray) {
-        if ([number intValue] > 255) {
+    if (numbersArray == nil || [numbersArray isEqualToArray:@[]]) {
+        return @"";
+    }
+    NSMutableString *returned = [NSMutableString new];
+    NSInteger number = 0;
+    while (number != 4) {
+        NSInteger value = 0;
+        if (number < numbersArray.count) {
+            value = [numbersArray[number] intValue];
+        }
+        if (value > 255) {
             return @"The numbers in the input array can be in the range from 0 to 255.";
-        }
-        if ([number integerValue] != [number unsignedIntValue]) {
+        } else if (value < 0) {
             return @"Negative numbers are not valid for input.";
+        } else {
+            [returned appendFormat:@"%ld.", value];
+            number++;
         }
     }
-    
-    NSMutableArray *temporaryArray = [NSMutableArray arrayWithArray:numbersArray];
-    while (temporaryArray.count != 4) {
-        if (temporaryArray.count > 4) {
-            [temporaryArray removeLastObject];
-        }else{
-            [temporaryArray addObject:@0];
-        }
-    }
-    
-    NSMutableString *str = [NSMutableString new];
-    
-    NSEnumerator *enumerator = [temporaryArray objectEnumerator];
-    NSNumber *number;
-    while (number = [enumerator nextObject]) {
-        [str appendString:[NSString stringWithFormat:@"%@.", number]];
-    }
-    
-
-    NSString *result = [str stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"."]];
-    
-    return result;
+    return [returned substringToIndex:[returned length] - 1];
 }
 
 @end
