@@ -4,10 +4,9 @@
 
 - (NSInteger)countPairs:(NSArray <NSNumber *> *)array number:(NSNumber *)number {
     NSInteger returnNumber = 0;
-    for (NSNumber *member in array) {
-        for (NSNumber *anotherMember in array) {
-            if ([member intValue] - [anotherMember intValue] < 0) { break; }
-            if ([member intValue] - [anotherMember intValue] == [number intValue]) {
+    for (int member = 0; member < [array count]; member++) {
+        for (int anotherMember = 1 + member; anotherMember < [array count]; anotherMember++) {
+            if (abs([array[anotherMember] intValue] - [array[member] intValue]) == [number intValue]) {
                 returnNumber++;
             }
         }
